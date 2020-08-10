@@ -1,31 +1,39 @@
-import React, { useState } from 'react';
-
-import google from '../../utils/google'
-
-
+import React, { useState, useEffect } from "react";
 
 export default function Home() {
-    const [term, setTerm] = useState('');
-    const [results, setResults] = useState([]);
-    const search = (ev) => {
-        ev.preventDefault();
-        google.search(term,res => {
-            setResults(res.result.items)
-            
-        })
-    }
-    return (
-        <div>
-            <form onSubmit={search}>
-                <input type="text" onChange={ev => setTerm(ev.target.value)}/>
-                <button type="submit">search</button>
-            </form>
-            <ul>
-                {results.map(book => (
-                    <li>{book.volumeInfo.title}</li>
-                ))}
-            </ul>
-        </div>
-    );
+  const [books, setBooks] = useState([]);
+  useEffect(() => {
+    const books = JSON.parse(localStorage.getItem("my_books"));
+    setBooks(books ? books : []);
+  }, []);
+  return (
+    <div className="container">
+      <h1>Welcome</h1>
+      
+      <div className="columns">
+        {books.map((book) => (
+          <div className="column col-4">
+            <div className="card">
+              <div className="card-image">
+                <img
+                  src={book.volumeInfo.imageLinks.thumbnail}
+                  class="img-responsive"
+                />
+              </div>
+              <div className="card-header">
+                <div className="card-title h5">{book.volumeInfo.title}</div>
+                <div className="card-subtitle text-gray">
+                  {book.volumeInfo.authors[0]}
+                </div>
+              </div>
+              <div className="card-body">{book.volumeInfo.description}</div>
+              <div className="card-footer">
+                <button className="btn btn-primary">Buy</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-

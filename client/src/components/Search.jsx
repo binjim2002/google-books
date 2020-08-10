@@ -1,12 +1,13 @@
 import React , {useState} from 'react';
+import google from '../utils/google';
 
-const Search = () => {
+const Search = ({resultCallback}) => {
     const [term, setTerm] = useState('');
-    const [results, setResults] = useState([]);
+    
     const search = (ev) => {
         ev.preventDefault();
         google.search(term,res => {
-            setResults(res.result.items)
+            resultCallback(res.result.items)
             
         })
     }
@@ -14,24 +15,12 @@ const Search = () => {
         <div>
             <form onSubmit={search}>
                 <div className="input-group input-inline">
-                    <input type="text" onChange={ev => setTerm(ev.target.value)}/>
+                    <input className="from-input" type="text" onChange={ev => setTerm(ev.target.value)}/>
+                    <button className="btn input-group-btn" type="submit">search</button>
                 </div>
-                <button class="btn" type="submit">search</button>
                 
             </form>
-            
-                {results.map(book => (
-                    <div className="tile tile-centered">
-                        
-                        <div className="tile-content">
-                        <div className="tile-title">{book.volumeInfo.title}</div>
-                            <small className="tile-subtitle text-gray">{'s'}</small>
-                        </div>
-                        
-                    </div>
-                  
-                ))}
-            
+        
         </div>
     );
 };
